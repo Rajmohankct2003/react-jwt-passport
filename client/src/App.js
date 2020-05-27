@@ -34,6 +34,9 @@ const LoginPage = () => {
     e.preventDefault();
     console.log('B');
   };
+  const isDisabled = (state) => {
+    return state.email === '' || state.password === '';
+  };
 
   return (
     <div className='w-screen h-screen bg-gray-700  '>
@@ -68,6 +71,7 @@ const LoginPage = () => {
                 titleBtn='Login'
                 OnSubmit={printA}
                 data={loginData}
+                isDisabled={() => isDisabled(loginData)}
                 setData={handleInputLogin}
               />
             </Route>
@@ -76,6 +80,7 @@ const LoginPage = () => {
                 titleBtn='Register'
                 OnSubmit={printB}
                 data={registerData}
+                isDisabled={() => isDisabled(registerData)}
                 setData={handleInputRegister}
               />
             </Route>

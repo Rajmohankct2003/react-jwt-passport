@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import { AiOutlineEyeInvisible, AiOutlineEye } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import uuid from 'uuid/v4';
+
 let inputEmail = uuid();
 let inputPassword = uuid();
-const Form = ({ titleBtn, OnSubmit, data, setData }) => {
+
+const Form = ({ titleBtn, OnSubmit, data, setData, isDisabled }) => {
   const [isVisible, setVisibility] = useState(false);
+
+  const ifDisabled = isDisabled();
   return (
-    <form
-      onSubmit={OnSubmit}
-      className='flex flex-col p-12 bg-white rounded-b-md  '
-    >
+    <form onSubmit={OnSubmit} className='flex flex-col p-12 bg-white  '>
       <label className='text-gray-700' htmlFor={`email-${inputEmail}`}>
         Email
       </label>
@@ -27,6 +28,7 @@ const Form = ({ titleBtn, OnSubmit, data, setData }) => {
       </label>
       <div className='flex relative items-center '>
         <input
+          autocomplete='new-password'
           name='password'
           value={data.password}
           onChange={setData}
@@ -44,7 +46,10 @@ const Form = ({ titleBtn, OnSubmit, data, setData }) => {
       </div>
       <button
         type='submit'
-        className='text-sm py-1 text-gray-100 bg-blue-600  my-4 rounded-sm'
+        disabled={isDisabled()}
+        className={`text-sm py-1 text-gray-100  my-4 rounded-sm ${
+          ifDisabled ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-600'
+        }`}
       >
         {titleBtn}
       </button>
@@ -52,7 +57,7 @@ const Form = ({ titleBtn, OnSubmit, data, setData }) => {
         <button
           type='button'
           onClick={() => console.log('clicked')}
-          className=' flex items-center justify-around w-3/5'
+          className='flex items-center justify-around w-3/5'
         >
           <FcGoogle />
           Sign in with Google
