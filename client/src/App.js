@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  BrowserRouter,
-  Switch,
-  Redirect,
-  Route,
-  Link,
-  NavLink,
-} from 'react-router-dom';
+import { BrowserRouter, Switch, Route, NavLink } from 'react-router-dom';
 import './assets/main.css';
 import AuthorizedRoute from './utils/AuthorizedRoute';
 import linus from './images/linus.jpg';
@@ -39,8 +32,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div className='w-screen h-screen bg-gray-700  '>
-      <div className='flex flex-col-reverse sm:flex-row items-center justify-center  h-screen overflow-hidden '>
+    <div className='w-screen h-screen bg-gray-700'>
+      <div className='flex flex-col-reverse sm:flex-row items-center justify-center h-screen overflow-hidden '>
         <div className='w-2/4 max-w-md w-full '>
           <nav>
             <ul className='flex justify-around bg-gray-600 py-3 text-gray-100 '>
@@ -102,10 +95,10 @@ function App() {
     <BrowserRouter>
       <Switch>
         <Route path='/auth'>
-          <LoginPage></LoginPage>
+          <LoginPage />
         </Route>
         <AuthorizedRoute exact path='/'>
-          <AuthorizedLayout></AuthorizedLayout>
+          <AuthorizedLayout />
         </AuthorizedRoute>
       </Switch>
     </BrowserRouter>
