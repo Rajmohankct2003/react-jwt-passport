@@ -1,4 +1,5 @@
-# react-jwt
+# react-jwt-
 
-
-JWT -> Login with token
+Steps:
+*JWT -> Login with token (done)
+*Next: Google Oauth
