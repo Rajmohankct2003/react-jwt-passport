@@ -9,7 +9,7 @@ router.get(
   (req, res, next) => {
     res.status(200).json({
       success: true,
-      msg: 'You are successfully authenticated to this route!',
+      user: req.user,
     });
   }
 );
@@ -51,7 +51,9 @@ router.post('/register', async (req, res, next) => {
   try {
     let existingUser = await User.findOne({ email: email });
     if (existingUser) {
-      return res.status(422).send({ error: 'email is in use' });
+      return res
+        .status(422)
+        .send({ error: 'Incorrect email/password combination' });
     }
     const saltHash = await hashPassword(password);
 
