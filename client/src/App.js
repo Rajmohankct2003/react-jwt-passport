@@ -14,11 +14,9 @@ const AuthorizedLayout = () => {
 
   const getUser = async () => {
     const token = JSON.parse(localStorage.getItem('@pocpassaport'));
-    console.log(token);
     let result = await axios.get('http://localhost:4000/api/protected', {
       headers: { Authorization: token.token },
     });
-    console.log(result);
     setUser(result.data.user.email);
   };
   useEffect(() => {
@@ -42,7 +40,7 @@ const AuthorizedLayout = () => {
   );
 };
 
-const LoginPage = () => {
+const AuthPage = () => {
   const history = useHistory();
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [registerData, setRegisterData] = useState({ email: '', password: '' });
@@ -71,6 +69,7 @@ const LoginPage = () => {
     console.log(localStorage);
     history.push('/');
   };
+
   const isDisabled = (state) => {
     return state.email === '' || state.password === '';
   };
@@ -145,7 +144,7 @@ function App() {
   return (
     <Switch>
       <Route path='/auth'>
-        <LoginPage />
+        <AuthPage />
       </Route>
       <AuthorizedRoute exact path='/'>
         <AuthorizedLayout />

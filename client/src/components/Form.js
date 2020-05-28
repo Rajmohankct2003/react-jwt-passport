@@ -2,12 +2,19 @@ import React, { useState } from 'react';
 import { AiOutlineEyeInvisible, AiOutlineEye } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import uuid from 'uuid/v4';
+import axios from 'axios';
 
 let inputEmail = uuid();
 let inputPassword = uuid();
 
 const Form = ({ titleBtn, OnSubmit, data, setData, isDisabled }) => {
   const [isVisible, setVisibility] = useState(false);
+
+  const handleGoogleClick = async () => {
+    let result = await axios.get('http://localhost:4000/api/auth/google');
+
+    console.log(result);
+  };
 
   const ifDisabled = isDisabled();
   return (
@@ -54,10 +61,11 @@ const Form = ({ titleBtn, OnSubmit, data, setData, isDisabled }) => {
         {titleBtn}
       </button>
       <div className='flex justify-center hover:text-gray-600'>
+        <a href='http://localhost:4000/api/auth/google'>Here</a>
         <button
           type='button'
-          onClick={() => console.log('clicked')}
-          className='flex items-center justify-around w-3/5'
+          onClick={handleGoogleClick}
+          className='flex items-center justify-around w-3/5 focus:outline-none'
         >
           <FcGoogle />
           Sign in with Google

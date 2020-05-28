@@ -13,7 +13,31 @@ router.get(
     });
   }
 );
+router.get(
+  '/auth/google',
+  passport.authenticate('google', {
+    scope: [
+      'https://www.googleapis.com/auth/userinfo.profile',
+      'https://www.googleapis.com/auth/userinfo.email',
+    ],
+  })
+);
 
+router.get('/google', passport.authenticate('google'), (req, res) => {
+  console.log('req', req);
+  console.log('res', res);
+  if (!req.user) {
+    return res.status(422).json({
+      success: false,
+      token: null,
+    });
+  }
+  return res.status(201).json({
+    success: true,
+    token: req.user.token,
+    expiresIn: req.user.expires,
+  });
+});
 router.post('/login', async (req, res, next) => {
   try {
     let user = await User.findOne({ email: req.body.email });
