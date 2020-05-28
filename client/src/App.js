@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Switch, Route, NavLink } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Switch,
+  Route,
+  NavLink,
+  Redirect,
+} from 'react-router-dom';
 import './assets/main.css';
+import PageNotFound from './components/PageNotFound';
 import AuthorizedRoute from './utils/AuthorizedRoute';
 import linus from './images/linus.jpg';
 import Form from './components/Form';
@@ -39,9 +46,15 @@ const LoginPage = () => {
             <ul className='flex justify-around bg-gray-600 py-3 text-gray-100 '>
               <li>
                 <NavLink
+                  isActive={(match, location) => {
+                    if (!match) {
+                      return false;
+                    }
+                    return match.isExact;
+                  }}
                   activeClassName=' border-solid border-2 p-2 border-blue-400'
                   className='px-10 text-gray-100'
-                  to='/auth/login'
+                  to='/auth'
                 >
                   Login
                 </NavLink>
@@ -59,7 +72,7 @@ const LoginPage = () => {
           </nav>
 
           <Switch>
-            <Route path='/auth/login'>
+            <Route exact strict path='/auth'>
               <Form
                 titleBtn='Login'
                 OnSubmit={printA}
@@ -68,7 +81,7 @@ const LoginPage = () => {
                 setData={handleInputLogin}
               />
             </Route>
-            <Route path='/auth/register'>
+            <Route exact path='/auth/register'>
               <Form
                 titleBtn='Register'
                 OnSubmit={printB}
@@ -77,6 +90,7 @@ const LoginPage = () => {
                 setData={handleInputRegister}
               />
             </Route>
+            <Redirect to='/auth' />
           </Switch>
         </div>
         <div className='w-2/4 flex justify-center'>
@@ -100,6 +114,9 @@ function App() {
         <AuthorizedRoute exact path='/'>
           <AuthorizedLayout />
         </AuthorizedRoute>
+        <Route>
+          <PageNotFound />
+        </Route>
       </Switch>
     </BrowserRouter>
   );

@@ -28,7 +28,7 @@ const Form = ({ titleBtn, OnSubmit, data, setData, isDisabled }) => {
       </label>
       <div className='flex relative items-center '>
         <input
-          autocomplete='new-password'
+          autoComplete='new-password'
           name='password'
           value={data.password}
           onChange={setData}
