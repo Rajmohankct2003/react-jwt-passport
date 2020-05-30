@@ -14,7 +14,9 @@ const Form = ({ titleBtn, OnSubmit, data, setData, isDisabled, error }) => {
 
   const handleGoogleLogin = async (response) => {
     let result = await api.googleLogin(response);
-    saveAndRedirect(result);
+    if (result) {
+      saveAndRedirect(result);
+    }
   };
 
   const ifDisabled = isDisabled();

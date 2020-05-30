@@ -5,15 +5,11 @@ const URL = axios.create({
 
 const PocFetch = {
   googleLogin: async (response) => {
-    const { profileObj, googleId } = response;
+    const { accessToken } = response;
+    if (!accessToken) return null;
     const googleresponse = {
-      name: profileObj.name,
-      email: profileObj.email,
-      providerId: googleId,
-      imageUrl: profileObj.imageUrl,
-      provider: 'Google',
+      access_token: accessToken,
     };
-
     let result = await URL.post('login/google', googleresponse);
     return result.data;
   },

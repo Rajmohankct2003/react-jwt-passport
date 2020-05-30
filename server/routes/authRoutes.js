@@ -74,37 +74,24 @@ router.post('/register', async (req, res, next) => {
   }
 });
 
-router.post('/login/google', async (req, res) => {
-  const { name, email, providerId, imageUrl, provider } = req.body;
-
-  try {
-    let existingUser = await User.findOne({ providerId });
-    if (existingUser) {
-      const tokenObject = issueJWT(existingUser);
+router.post(
+  '/login/google',
+  passport.authenticate('google-token', { session: false }),
+  async (req, res) => {
+    if (req.error) {
+      return res.status(401).json({
+        success: false,
+        token: null,
+        expiresIn: null,
+      });
+    } else {
       return res.status(200).json({
         success: true,
-        token: tokenObject.token,
-        expiresIn: tokenObject.expires,
+        token: req.user.token,
+        expiresIn: req.user.expires,
       });
     }
-    const newUser = new User({
-      email,
-      hash: null,
-      name,
-      providerId,
-      provider,
-      imageUrl,
-    });
-    let savedUser = await newUser.save();
-    const tokenObject = issueJWT(savedUser);
-    return res.status(200).json({
-      success: true,
-      token: tokenObject.token,
-      expiresIn: tokenObject.expires,
-    });
-  } catch (error) {
-    return res.status(500).json(error);
   }
-});
+);
 
 module.exports = router;
