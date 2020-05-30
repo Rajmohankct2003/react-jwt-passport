@@ -1,10 +1,9 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-function issueJWT(user) {
+
+const issueJWT = (user) => {
   const _id = user._id;
-
   const expiresIn = '1d';
-
   const payload = {
     sub: _id,
     iat: Date.now(),
@@ -18,7 +17,7 @@ function issueJWT(user) {
     token: 'Bearer ' + signedToken,
     expires: expiresIn,
   };
-}
+};
 
 const hashPassword = async (password) => {
   if (!password) {

@@ -13,31 +13,7 @@ router.get(
     });
   }
 );
-router.get(
-  '/auth/google',
-  passport.authenticate('google', {
-    scope: [
-      'https://www.googleapis.com/auth/userinfo.profile',
-      'https://www.googleapis.com/auth/userinfo.email',
-    ],
-  })
-);
 
-router.get('/google', passport.authenticate('google'), (req, res) => {
-  console.log('req', req);
-  console.log('res', res);
-  if (!req.user) {
-    return res.status(422).json({
-      success: false,
-      token: null,
-    });
-  }
-  return res.status(201).json({
-    success: true,
-    token: req.user.token,
-    expiresIn: req.user.expires,
-  });
-});
 router.post('/login', async (req, res, next) => {
   try {
     let user = await User.findOne({ email: req.body.email });
@@ -95,6 +71,39 @@ router.post('/register', async (req, res, next) => {
     });
   } catch (err) {
     res.json({ success: false, msg: err });
+  }
+});
+
+router.post('/login/google', async (req, res) => {
+  const { name, email, providerId, imageUrl, provider } = req.body;
+
+  try {
+    let existingUser = await User.findOne({ providerId });
+    if (existingUser) {
+      const tokenObject = issueJWT(existingUser);
+      return res.status(200).json({
+        success: true,
+        token: tokenObject.token,
+        expiresIn: tokenObject.expires,
+      });
+    }
+    const newUser = new User({
+      email,
+      hash: null,
+      name,
+      providerId,
+      provider,
+      imageUrl,
+    });
+    let savedUser = await newUser.save();
+    const tokenObject = issueJWT(savedUser);
+    return res.status(200).json({
+      success: true,
+      token: tokenObject.token,
+      expiresIn: tokenObject.expires,
+    });
+  } catch (error) {
+    return res.status(500).json(error);
   }
 });
 
