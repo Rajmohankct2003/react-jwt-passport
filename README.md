@@ -91,7 +91,7 @@ From now on, the process is the same from JWT authentication, the token is gener
 
 ## Other Topics
 
-- This project was built using [Tailwind CSS](https://tailwindcss.com/) and prepared to use [Styled Components](https://styled-components.com/), if you want to configure yourself you can follow [this tutorial](https://styled-components.com/)
+- This project was built using [Tailwind CSS](https://tailwindcss.com/) and prepared to use [Styled Components](https://styled-components.com/), if you want to configure yourself you can follow [this tutorial](https://www.youtube.com/watch?v=FiGmAI5e91M)
 - This project also uses React Icons, you can see more of them [here](https://react-icons.github.io/react-icons/).
 - If you would like to see another project that uses hooks you can check my Iron Beers project [here](https://github.com/lotofcaffeine/ironbeers-hooks).
 - To know more about hooks or routing in React you can check the [Official Hooks Documentation](https://reactjs.org/docs/hooks-intro.html) and the [React Router Documentattion](https://reacttraining.com/react-router/web/guides/quick-start).
