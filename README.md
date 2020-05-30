@@ -97,5 +97,5 @@ From now on, the process is the same from JWT authentication, the token is gener
 - To know more about hooks or routing in React you can check the [Official Hooks Documentation](https://reactjs.org/docs/hooks-intro.html) and the [React Router Documentattion](https://reacttraining.com/react-router/web/guides/quick-start).
 
 <p align="center">
-   <img src=".github/funny.png" width="200"/>
+   <img src=".github/loop.JPG" width="200"/>
 </p>
