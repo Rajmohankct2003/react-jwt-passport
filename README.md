@@ -33,6 +33,8 @@ PORT=4000
 ENV=development
 MONGODB_URI='<MongoDB connection string>'
 SERVER_API_URL=http://localhost:4000/api
+GOOGLE_CLIENT_ID=<Client ID of your Google Developer Application>
+GOOGLE_CLIENT_SECRET=<Secret of your Google Developer Application>
 JWT_SECRET="<Random string used to crypt message>"
 ```
 
@@ -83,9 +85,11 @@ The Login page shows a similar form that will perform the authentication of a pr
 
 The React application is responsible for the communication with Google, possible due to the [React Google Login](https://www.npmjs.com/package/react-google-login) module, that provides A Google oAUth Sign-in / Log-in Component for React. In this case all the authentication process is performed by Google, the application trusts the logged user because trusts the information provided by Google.
 
-The `GoogleLogin` component, when clicked, opens a pop-up with Google login page. After a successful authentication, Google redirects the browser back to the React application with a `profile` object with the user infomations, like name, image, etc. This object is then sent to a server route called '/api/login/google'. This route first try to find a user in MongoDB with the same email provided by the client in order to associate the Google Account to the user. If the user doesn't exists, a new one is created using the Google account information.
+The `GoogleLogin` component, when clicked, opens a pop-up with the Google login page. After a successful authentication, Google redirects the browser back to the React application with an `accessToken` object. This object is then sent to a server route called '/api/login/google'.
 
-Two important information here are `providerId` and `provider`, the first one is the Google user ID and its responsible to keep the link between the two accounts, `provider` is a string field that stores the name of the authentication service, _Google_ in this casea, it is useful when several authentication providers are used, _Facebook_, _LinkedIn_, etc. [This article](https://medium.com/@alexanderleon/implement-social-authentication-with-react-restful-api-9b44f4714fa) has a complete example of authentication in mutiple services that use OAuth.
+Using `Passaport` and [Google Token Strategy](https://www.npmjs.com/package/passport-google-token) the access token is validated thtrought a new request to Google and a `profile` object with the user infomations, like name, image, etc. is returned. The next step is to check if there is already a user linked with that Google Account in MongoDB, this is done by trying to find a user with a `profileId` with the same value as the ID in `profile` object. If no user is found, a new one is created using the Google account information.
+
+Two important information here are `providerId` and `provider`, the first one is the Google user ID and its responsible to keep the link between the two accounts, `provider` is a string field that stores the name of the authentication service, _Google_ in this case, it is useful when several authentication providers are used, _Facebook_, _LinkedIn_, etc. [This article](https://medium.com/@alexanderleon/implement-social-authentication-with-react-restful-api-9b44f4714fa) has a complete example of authentication in mutiple services that use OAuth.
 
 From now on, the process is the same from JWT authentication, the token is generated and stored in client's `localStorage`.
 
