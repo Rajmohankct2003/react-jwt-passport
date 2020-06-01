@@ -2,10 +2,10 @@
 
 This project shows how to perform two types of authentication:
 
-- **Local Authentication**: a server-side authentication using Sessions.
+- **JWT Authentication**: a server-side authentication using JSON Web Token open standard.
 - **OAuth2 Authentication**: A client-side authentication using OAuth version 2 protocol to authenticate to Google.
 
-This project is divided in a Node.js Server responsible for the Local Authentication and a React client responsible for the OAuth2 authentication.
+This project is divided in a Node.js Server responsible for the JWT Authentication and a React client responsible for the OAuth2 authentication.
 
 **Note:** This project handle only the main flow, alternative flows, like errors handling, are not covered and may present errors.
 
@@ -35,7 +35,7 @@ MONGODB_URI='<MongoDB connection string>'
 SERVER_API_URL=http://localhost:4000/api
 GOOGLE_CLIENT_ID=<Client ID of your Google Developer Application>
 GOOGLE_CLIENT_SECRET=<Secret of your Google Developer Application>
-SECRET="<Random string used to crypt message>"
+JWT_SECRET="<Random string used to crypt message>"
 ```
 
 4. Start the server:
@@ -65,21 +65,19 @@ npm start
 
 You should see the authentication page loaded in your browser.
 
-The web application has a login and a registration page, they comunicate with the server throught its API to perform the Local and Google authentications.
+The web application has a login and a registration page, they comunicate with the server throught its API to perform the JWT authentication.
 
-## How Local Authentication Works
+## How JWT Authentication Works
 
-The authentication is performed by the Node.js server, based on users registered in a MongoDB instance, all the authentication process is handled by the [Passport](http://www.passportjs.org/) module. This module handles several types of authentication, the one used in this tutorial is the [Passaport Local](http://www.passportjs.org/packages/passport-local/).
+The authentication is performed by the Node.js server, based on users registered in a MongoDB instance, all the authentication process is handled by the [Passport](http://www.passportjs.org/) module. This module handles several types of authentication, the one used in this tutorial is the [Passaport JWT](http://www.passportjs.org/packages/passport-jwt/).
 
 First, you need to register a new user, the `http://localhost/auth` route loads the registration form, the email and password is sent to the server throught a POST request to `/api/register` route.
 
-The server receives the user information (`authRoutes.js` file) and checks if the email is already associated to another account, performing a search in MongoDB. If no user is found, a new one is created.
+The server receives the user information(`authRoutes.js` file) and checks if the email is already associated to another account, performing a search in MongoDB. If no user is found, a new one is created.
 
-Next, the user ID stored in a Session (the session is also stored in MongoDB). The functions `serializeUser` and `deserializeUser` are responsible for translating a user object to data to be stored in session (the ID information in this case) and vice-versa. The session ID is automatically sent to the client in the request's response.
+Next, a token is created based on the user information, this is done by `issueJWT` method in `utils.js`. First, a payload object with a `sub` property containing the new user ID and a `iat` containing the current time is created and passed to the function `jwt.sign` from `jsonwebtoken` module, this function signs the object using the `JWT_SECRET` as a secret key and generates a token object that will be returned to the client.
 
-When the client receives the server response, the session ID is automatically saved in a cookie and all the next requests will be sent with this information attached, this is how the server knows which session should be retrieved from MongoDB.
-
-Finally the browser is redirected to a protected route(`/`). Protected routes should not be accessible without authentication, so these pages make requests to `/api/protected` route. This route validates the user, using `passport.authenticate` and returns if it is valid or not. The client should use this information to allow the page loading or not.
+When the client receives the token information, a `useSaveRedirect` hook is responsible for storing it in the `localStorage` and redirect to a protected route(`/`). Protected routes should not be accessible without authentication, so these pages make requests to `/api/protected` route. This route validates the token, using `passport.authenticate` and returns if the token is valid or not. The client should use this information to allow the page loading or not.
 
 The Login page shows a similar form that will perform the authentication of a pre-existent user. The client sends the user information to the `/api/login` route, where the email is used to search a user in MongoDB, if it is found, the password is compared with the one received from the request and the token generation is performed, like explained during registration.
 
@@ -89,11 +87,11 @@ The React application is responsible for the communication with Google, possible
 
 The `GoogleLogin` component, when clicked, opens a pop-up with the Google login page. After a successful authentication, Google redirects the browser back to the React application with an `accessToken` object. This object is then sent to a server route called '/api/login/google'.
 
-Using `Passaport` and [Google Token Strategy](https://www.npmjs.com/package/passport-google-token) the access token is validated thtrought a new request to Google and a `profile` object with the user infomation, like name, image, etc. is returned. The next step is to check if there is already a user linked with that Google Account in MongoDB, this is done by trying to find a user with a `profileId` with the same value as the ID in `profile` object. If no user is found, a new one is created using the Google account information.
+Using `Passaport` and [Google Token Strategy](https://www.npmjs.com/package/passport-google-token) the access token is validated thtrought a new request to Google and a `profile` object with the user infomations, like name, image, etc. is returned. The next step is to check if there is already a user linked with that Google Account in MongoDB, this is done by trying to find a user with a `profileId` with the same value as the ID in `profile` object. If no user is found, a new one is created using the Google account information.
 
 Two important information here are `providerId` and `provider`, the first one is the Google user ID and its responsible to keep the link between the two accounts, `provider` is a string field that stores the name of the authentication service, _Google_ in this case, it is useful when several authentication providers are used, _Facebook_, _LinkedIn_, etc. [This article](https://medium.com/@alexanderleon/implement-social-authentication-with-react-restful-api-9b44f4714fa) has a complete example of authentication in mutiple services that use OAuth.
 
-From now on, the process is the same from Local authentication.
+From now on, the process is the same from JWT authentication, the token is generated and stored in client's `localStorage`.
 
 ## Other Topics
 
